@@ -20,7 +20,8 @@ public class Dark : ModuleRules
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {
-			"NetCore",
+			"NetCore", 
+			"ModularGameplay",
 		});
 
 		// Uncomment if you are using Slate UI
