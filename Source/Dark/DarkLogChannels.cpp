@@ -3,6 +3,9 @@
 
 #include "DarkLogChannels.h"
 
+DEFINE_LOG_CATEGORY(LogDark);
+DEFINE_LOG_CATEGORY(LogDarkAbilitySystem);
+
 FString GetClientServerContextString(UObject* ContextObject)
 {
 	ENetRole Role = ROLE_None;
