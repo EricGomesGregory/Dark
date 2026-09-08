@@ -4,6 +4,7 @@
 #include "DarkPlayerController.h"
 
 #include "Dark/AbilitySystem/DarkAbilitySystemComponent.h"
+#include "Dark/Camera/DarkPlayerCameraManager.h"
 #include "AbilitySystemGlobals.h"
 #include "DarkPlayerState.h"
 #include "Dark/UI/DarkHUD.h"
@@ -14,6 +15,7 @@
 ADarkPlayerController::ADarkPlayerController(const FObjectInitializer& ObjectInitializer)
 : Super(ObjectInitializer)
 {
+	PlayerCameraManagerClass = ADarkPlayerCameraManager::StaticClass();
 }
 
 ADarkPlayerState* ADarkPlayerController::GetDarkPlayerState() const

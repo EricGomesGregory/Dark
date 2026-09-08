@@ -10,6 +10,7 @@
 #include "AbilitySystemGlobals.h"
 #include "AbilitySystemLog.h"
 #include "DarkAbilityCost.h"
+#include "Dark/Camera/DarkCameraMode.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(DarkGameplayAbility)
 
@@ -34,7 +35,7 @@ UDarkGameplayAbility::UDarkGameplayAbility(const FObjectInitializer& ObjectIniti
 	ActivationPolicy = EDarkAbilityActivationPolicy::OnInputTriggered;
 	ActivationGroup = EDarkAbilityActivationGroup::Independent;
 
-	bLogCancelation = false;
+	bLogCancellation = false;
 
 	//ActiveCameraMode = nullptr;
 }
@@ -157,9 +158,32 @@ bool UDarkGameplayAbility::ChangeActivationGroup(EDarkAbilityActivationGroup New
 	return true;
 }
 
+void UDarkGameplayAbility::SetCameraMode(TSubclassOf<UDarkCameraMode> CameraMode)
+{
+	ENSURE_ABILITY_IS_INSTANTIATED_OR_RETURN(SetCameraMode, );
+
+	//@Eric TODO: Uncomment after implementing UDarkHeroComponent
+	//if (auto* HeroComponent = GetHeroComponentFromActorInfo())
+	//{
+	//	HeroComponent->SetAbilityCameraMode(CameraMode, CurrentSpecHandle);
+	//	ActiveCameraMode = CameraMode;
+	//}
+}
+
 void UDarkGameplayAbility::ClearCameraMode()
 {
-	//@Eric TODO: Implement this in the future
+	ENSURE_ABILITY_IS_INSTANTIATED_OR_RETURN(ClearCameraMode, );
+
+	if (ActiveCameraMode)
+	{
+		//@Eric TODO: Uncomment after implementing UDarkHeroComponent 
+		//if (auto* HeroComponent = GetHeroComponentFromActorInfo())
+		//{
+		//	HeroComponent->ClearAbilityCameraMode(CurrentSpecHandle);
+		//}
+
+		ActiveCameraMode = nullptr;
+	}
 }
 
 void UDarkGameplayAbility::NativeOnAbilityFailedToActivate(const FGameplayTagContainer& FailedReason) const

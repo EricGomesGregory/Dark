@@ -6,6 +6,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "DarkGameplayAbility.generated.h"
 
+class UDarkCameraMode;
 class ADarkPlayerController;
 class UDarkAbilityCost;
 
@@ -92,8 +93,8 @@ public:
 	bool ChangeActivationGroup(EDarkAbilityActivationGroup NewGroup);
 
 	// Sets the ability's camera mode.
-	//UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
-	//void SetCameraMode(TSubclassOf<UDarkCameraMode> CameraMode);
+	UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
+	void SetCameraMode(TSubclassOf<UDarkCameraMode> CameraMode);
 
 	// Clears the ability's camera mode.  Automatically called if needed when the ability ends.
 	UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
@@ -155,7 +156,7 @@ protected:
 	
 	// If true, extra information should be logged when this ability is canceled. This is temporary, used for tracking a bug.
 	UPROPERTY(EditDefaultsOnly, Category = "Advanced")
-	bool bLogCancelation;
+	bool bLogCancellation;
 
 	// Additional costs that must be paid to activate this ability
 	UPROPERTY(EditDefaultsOnly, Instanced, Category = Costs)
@@ -170,5 +171,5 @@ protected:
 	TMap<FGameplayTag, TObjectPtr<UAnimMontage>> FailureTagToAnimMontage;
 	
 	// Current camera mode set by the ability.
-	//TSubclassOf<UDarkCameraMode> ActiveCameraMode;
+	TSubclassOf<UDarkCameraMode> ActiveCameraMode;
 };
