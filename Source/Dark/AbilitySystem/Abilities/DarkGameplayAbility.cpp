@@ -3,12 +3,13 @@
 
 #include "DarkGameplayAbility.h"
 
+#include "Dark/AbilitySystem/DarkAbilitySystemComponent.h"
+#include "Dark/Player/DarkPlayerController.h"
+#include "Dark/DarkGameplayTags.h"
+#include "Dark/DarkLogChannels.h"
 #include "AbilitySystemGlobals.h"
 #include "AbilitySystemLog.h"
 #include "DarkAbilityCost.h"
-#include "Dark/DarkGameplayTags.h"
-#include "Dark/DarkLogChannels.h"
-#include "Dark/AbilitySystem/DarkAbilitySystemComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(DarkGameplayAbility)
 
@@ -41,6 +42,41 @@ UDarkGameplayAbility::UDarkGameplayAbility(const FObjectInitializer& ObjectIniti
 UDarkAbilitySystemComponent* UDarkGameplayAbility::GetDarkAbilitySystemComponentFromActorInfo() const
 {
 	return (CurrentActorInfo ? Cast<UDarkAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent.Get()) : nullptr);
+}
+
+ADarkPlayerController* UDarkGameplayAbility::GetDarkPlayerControllerFromActorInfo() const
+{
+	return (CurrentActorInfo ? Cast<ADarkPlayerController>(CurrentActorInfo->PlayerController.Get()) : nullptr);
+}
+
+AController* UDarkGameplayAbility::GetControllerFromActorInfo() const
+{
+	if (CurrentActorInfo)
+	{
+		if (AController* PC = CurrentActorInfo->PlayerController.Get())
+		{
+			return PC;
+		}
+
+		// Look for a player controller or pawn in the owner chain.
+		AActor* TestActor = CurrentActorInfo->OwnerActor.Get();
+		while (TestActor)
+		{
+			if (AController* C = Cast<AController>(TestActor))
+			{
+				return C;
+			}
+
+			if (const APawn* Pawn = Cast<APawn>(TestActor))
+			{
+				return Pawn->GetController();
+			}
+
+			TestActor = TestActor->GetOwner();
+		}
+	}
+
+	return nullptr;
 }
 
 void UDarkGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const

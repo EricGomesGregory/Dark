@@ -6,6 +6,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "DarkGameplayAbility.generated.h"
 
+class ADarkPlayerController;
 class UDarkAbilityCost;
 
 
@@ -65,7 +66,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
 	UDarkAbilitySystemComponent* GetDarkAbilitySystemComponentFromActorInfo() const;
 
-	//@Eric TODO: Implement getters for PlayerController, Character, etc.
+	UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
+	ADarkPlayerController* GetDarkPlayerControllerFromActorInfo() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
+	AController* GetControllerFromActorInfo() const;
+
+	//UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
+	//ADarkCharacter* GetDarkCharacterFromActorInfo() const;
+
+	//UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
+	//UDarkHeroComponent* GetHeroComponentFromActorInfo() const;
 	
 	EDarkAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
 	EDarkAbilityActivationGroup GetActivationGroup() const { return ActivationGroup; }
