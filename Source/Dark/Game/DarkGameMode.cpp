@@ -4,6 +4,7 @@
 #include "DarkGameMode.h"
 
 #include "Dark/Player/DarkPlayerController.h"
+#include "Dark/Character/DarkCharacter.h"
 #include "Dark/Player/DarkPlayerState.h"
 #include "Dark/UI/DarkHUD.h"
 
@@ -18,6 +19,6 @@ ADarkGameMode::ADarkGameMode(const FObjectInitializer& ObjectInitializer)
 	PlayerControllerClass = ADarkPlayerController::StaticClass();
 	//ReplaySpectatorPlayerControllerClass = ADarkReplayPlayerController::StaticClass();
 	PlayerStateClass = ADarkPlayerState::StaticClass();
-	//DefaultPawnClass = ADarkCharacter::StaticClass();
+	DefaultPawnClass = ADarkCharacter::StaticClass();
 	HUDClass = ADarkHUD::StaticClass();
 }

@@ -3,6 +3,8 @@
 
 #include "DarkGameplayTags.h"
 
+#include "DarkLogChannels.h"
+
 namespace DarkGameplayTags
 {
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActivateFail_IsDead, "Ability.ActivateFail.IsDead", "Ability failed to activate because its owner is dead.");
@@ -16,6 +18,7 @@ namespace DarkGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Behavior_SurvivesDeath, "Ability.Behavior.SurvivesDeath", "An ability with this type tag should not be canceled due to death.");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Gameplay_AbilityInputBlocked, "Gameplay.AbilityInputBlocked", "");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Gameplay_MovementStopped, "Gameplay.MovementStopped", "");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Input_Move, "Input.Move", "Move input.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Input_Look_Mouse, "Input.Look.Mouse", "Look (mouse) input.");
@@ -33,4 +36,54 @@ namespace DarkGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Status_Death_Dying, "Status.Death.Dying", "Target has begun the death process.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Status_Death_Dead, "Status.Death.Dead", "Target has finished the death process.");
 	
+	// These are mapped to the movement modes inside GetMovementModeTagMap()
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Movement_Mode_Walking, "Movement.Mode.Walking", "Default Character movement tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Movement_Mode_NavWalking, "Movement.Mode.NavWalking", "Default Character movement tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Movement_Mode_Falling, "Movement.Mode.Falling", "Default Character movement tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Movement_Mode_Swimming, "Movement.Mode.Swimming", "Default Character movement tag");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Movement_Mode_Flying, "Movement.Mode.Flying", "Default Character movement tag");
+
+	// When extending Dark, you can create your own movement modes but you need to update GetCustomMovementModeTagMap()
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Movement_Mode_Custom, "Movement.Mode.Custom", "This is invalid and should be replaced with custom tags.  See DarkGameplayTags::CustomMovementModeTagMap.");
+
+	// Unreal Movement Modes
+	const TMap<uint8, FGameplayTag> MovementModeTagMap =
+	{
+		{ MOVE_Walking, Movement_Mode_Walking },
+		{ MOVE_NavWalking, Movement_Mode_NavWalking },
+		{ MOVE_Falling, Movement_Mode_Falling },
+		{ MOVE_Swimming, Movement_Mode_Swimming },
+		{ MOVE_Flying, Movement_Mode_Flying },
+		{ MOVE_Custom, Movement_Mode_Custom }
+	};
+
+	// Custom Movement Modes
+	const TMap<uint8, FGameplayTag> CustomMovementModeTagMap =
+	{
+		// Fill these in with your custom modes
+	};
+	
+	FGameplayTag FindTagByString(const FString& TagString, bool bMatchPartialString)
+	{
+		const UGameplayTagsManager& Manager = UGameplayTagsManager::Get();
+		FGameplayTag Tag = Manager.RequestGameplayTag(FName(*TagString), false);
+
+		if (!Tag.IsValid() && bMatchPartialString)
+		{
+			FGameplayTagContainer AllTags;
+			Manager.RequestAllGameplayTags(AllTags, true);
+
+			for (const FGameplayTag& TestTag : AllTags)
+			{
+				if (TestTag.ToString().Contains(TagString))
+				{
+					UE_LOG(LogDark, Display, TEXT("Could not find exact match for tag [%s] but found partial match on tag [%s]."), *TagString, *TestTag.ToString());
+					Tag = TestTag;
+					break;
+				}
+			}
+		}
+
+		return Tag;
+	}
 }
