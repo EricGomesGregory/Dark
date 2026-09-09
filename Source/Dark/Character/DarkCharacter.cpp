@@ -4,10 +4,12 @@
 #include "DarkCharacter.h"
 
 #include "DarkCharacterMovementComponent.h"
+#include "DarkHealthComponent.h"
 #include "DarkPawnExtensionComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Dark/DarkGameplayTags.h"
 #include "Dark/AbilitySystem/DarkAbilitySystemComponent.h"
+#include "Dark/Camera/DarkCameraComponent.h"
 #include "Dark/Player/DarkPlayerController.h"
 #include "Dark/Player/DarkPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -55,6 +57,20 @@ ADarkCharacter::ADarkCharacter(const FObjectInitializer& ObjectInitializer)
 	PawnExtComponent = CreateDefaultSubobject<UDarkPawnExtensionComponent>(TEXT("PawnExtensionComponent"));
 	PawnExtComponent->OnAbilitySystemInitialized_RegisterAndCall(FSimpleMulticastDelegate::FDelegate::CreateUObject(this, &ThisClass::OnAbilitySystemInitialized));
 	PawnExtComponent->OnAbilitySystemUninitialized_Register(FSimpleMulticastDelegate::FDelegate::CreateUObject(this, &ThisClass::OnAbilitySystemUninitialized));
+
+	HealthComponent = CreateDefaultSubobject<UDarkHealthComponent>(TEXT("HealthComponent"));
+	HealthComponent->OnDeathStarted.AddDynamic(this, &ThisClass::OnDeathStarted);
+	HealthComponent->OnDeathFinished.AddDynamic(this, &ThisClass::OnDeathFinished);
+
+	CameraComponent = CreateDefaultSubobject<UDarkCameraComponent>(TEXT("CameraComponent"));
+	CameraComponent->SetRelativeLocation(FVector(-300.0f, 0.0f, 75.0f));
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = true;
+	bUseControllerRotationRoll = false;
+
+	BaseEyeHeight = 80.0f;
+	CrouchedEyeHeight = 50.0f;
 }
 
 ADarkPlayerController* ADarkCharacter::GetDarkPlayerController() const
@@ -178,16 +194,14 @@ void ADarkCharacter::OnAbilitySystemInitialized()
 	UDarkAbilitySystemComponent* DarkASC = GetDarkAbilitySystemComponent();
 	check(DarkASC);
 
-	//@Eric TODO: Uncomment after implementing UDarkHealthComponent
-	//HealthComponent->InitializeWithAbilitySystem(DarkASC);
+	HealthComponent->InitializeWithAbilitySystem(DarkASC);
 
 	InitializeGameplayTags();
 }
 
 void ADarkCharacter::OnAbilitySystemUninitialized()
 {
-	//@Eric TODO: Uncomment after implementing UDarkHealthComponent
-	//HealthComponent->UninitializeFromAbilitySystem();
+	HealthComponent->UninitializeFromAbilitySystem();
 }
 
 void ADarkCharacter::PossessedBy(AController* NewController)
@@ -253,8 +267,7 @@ void ADarkCharacter::InitializeGameplayTags()
 
 void ADarkCharacter::FellOutOfWorld(const class UDamageType& dmgType)
 {
-	//@Eric TODO: Uncomment after implementing UDarkHealthComponent
-	//HealthComponent->DamageSelfDestruct(/*bFellOutOfWorld=*/ true);
+	HealthComponent->DamageSelfDestruct(/*bFellOutOfWorld=*/ true);
 }
 
 void ADarkCharacter::OnDeathStarted(AActor* OwningActor)

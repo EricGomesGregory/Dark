@@ -8,6 +8,8 @@
 #include "GameFramework/Character.h"
 #include "DarkCharacter.generated.h"
 
+class UDarkHealthComponent;
+class UDarkCameraComponent;
 class UDarkPawnExtensionComponent;
 class ADarkPlayerState;
 class ADarkPlayerController;
@@ -106,4 +108,11 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dark|Character", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UDarkPawnExtensionComponent> PawnExtComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dark|Character", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UDarkHealthComponent> HealthComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dark|Character", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UDarkCameraComponent> CameraComponent;
+
 };

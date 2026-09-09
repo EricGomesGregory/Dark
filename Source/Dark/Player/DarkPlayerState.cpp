@@ -3,8 +3,10 @@
 
 #include "DarkPlayerState.h"
 
-#include "DarkPlayerController.h"
 #include "Dark/AbilitySystem/DarkAbilitySystemComponent.h"
+#include "Dark/AbilitySystem/Attributes/DarkHealthSet.h"
+#include "Dark/Character/DarkPawnExtensionComponent.h"
+#include "DarkPlayerController.h"
 #include "Net/UnrealNetwork.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(DarkPlayerState)
@@ -18,7 +20,7 @@ ADarkPlayerState::ADarkPlayerState(const FObjectInitializer& ObjectInitializer)
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 	
 	// These attribute sets will be detected by AbilitySystemComponent::InitializeComponent. Keeping a reference so that the sets don't get garbage collected before that.
-	//HealthSet = CreateDefaultSubobject<UDarkHealthSet>(TEXT("HealthSet"));
+	HealthSet = CreateDefaultSubobject<UDarkHealthSet>(TEXT("HealthSet"));
 	
 	// AbilitySystemComponent needs to be updated at a high frequency.
 	SetNetUpdateFrequency(100.0f);
@@ -68,11 +70,10 @@ void ADarkPlayerState::ClientInitialize(AController* C)
 {
 	Super::ClientInitialize(C);
 	
-	//@Eric TODO: Uncomment after implementing UDarkPawnExtensionComponent
-	//if (auto* PawnExtComp = UDarkPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
-	//{
-	//	PawnExtComp->CheckDefaultInitialization();
-	//}
+	if (auto* PawnExtComp = UDarkPawnExtensionComponent::FindPawnExtensionComponent(GetPawn()))
+	{
+		PawnExtComp->CheckDefaultInitialization();
+	}
 }
 
 void ADarkPlayerState::CopyProperties(APlayerState* PlayerState)
