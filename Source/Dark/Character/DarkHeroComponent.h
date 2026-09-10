@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayAbilitySpecHandle.h"
 #include "InputActionValue.h"
 #include "GameplayTagContainer.h"
 #include "Components/PawnComponent.h"
@@ -11,6 +12,7 @@
 #include "Components/GameFrameworkInitStateInterface.h"
 #include "DarkHeroComponent.generated.h"
 
+class UDarkCameraMode;
 class UDarkAbilityTagRelationshipMapping;
 class UGameFrameworkComponentManager;
 class UDarkInputConfig;
@@ -34,6 +36,12 @@ public:
 	/** Returns the hero component if one exists on the specified actor. */
 	UFUNCTION(BlueprintPure, Category = "Dark|Hero")
 	static UDarkHeroComponent* FindHeroComponent(const AActor* Actor) { return (Actor ? Actor->FindComponentByClass<UDarkHeroComponent>() : nullptr); }
+
+	/** Overrides the camera from an active gameplay ability */
+	void SetAbilityCameraMode(TSubclassOf<UDarkCameraMode> CameraMode, const FGameplayAbilitySpecHandle& OwningSpecHandle);
+
+	/** Clears the camera override if it is set */
+	void ClearAbilityCameraMode(const FGameplayAbilitySpecHandle& OwningSpecHandle);
 
 	/** Adds mode-specific input config */
 	void AddAdditionalInputConfig(const UDarkInputConfig* InputConfig);
@@ -73,18 +81,30 @@ protected:
 	void Input_LookGamepad(const FInputActionValue& InputActionValue);
 	void Input_Crouch(const FInputActionValue& InputActionValue);
 	
+	TSubclassOf<UDarkCameraMode> DetermineCameraMode() const;
+	
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Dark|Hero")
 	TArray<FInputMappingContextAndPriority> DefaultInputMappings;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Dark|Hero")
 	TObjectPtr<UDarkInputConfig> DefaultInputConfig;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Dark|Hero")
 	TArray<TObjectPtr<const UDarkAbilitySet>> DefaultAbilitySets;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Dark|Hero")
 	TObjectPtr<UDarkAbilityTagRelationshipMapping> TagRelationshipMapping;
+	
+	UPROPERTY(EditAnywhere, Category = "Dark|Hero")
+	TSubclassOf<UDarkCameraMode> DefaultCameraMode;
+	
+	/** Camera mode set by an ability. */
+	UPROPERTY()
+	TSubclassOf<UDarkCameraMode> AbilityCameraMode;
+	
+	/** Spec handle for the last ability to set a camera mode. */
+	FGameplayAbilitySpecHandle AbilityCameraModeOwningSpecHandle;
 	
 	/** True when player input bindings have been applied, will never be true for non - players */
 	bool bReadyToBindInputs;
