@@ -5,7 +5,6 @@
 
 #include "Dark/AbilitySystem/DarkAbilitySystemComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
-#include "Dark/Camera/DarkCameraComponent.h"
 #include "Dark/DarkGameplayTags.h"
 #include "Dark/DarkLogChannels.h"
 
@@ -21,9 +20,6 @@ UDarkPawnExtensionComponent::UDarkPawnExtensionComponent(const FObjectInitialize
 	PrimaryComponentTick.bCanEverTick = false;
 
 	SetIsReplicatedByDefault(true);
-
-	//PawnData = nullptr;
-	AbilitySystemComponent = nullptr;
 }
 
 bool UDarkPawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const
@@ -41,12 +37,6 @@ bool UDarkPawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentMana
 	}
 	if (CurrentState == DarkGameplayTags::InitState_Spawned && DesiredState == DarkGameplayTags::InitState_DataAvailable)
 	{
-		// Pawn data is required.
-		//if (!PawnData)
-		//{
-		//	return false;
-		//}
-
 		const bool bHasAuthority = Pawn->HasAuthority();
 		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
 
@@ -84,11 +74,11 @@ void UDarkPawnExtensionComponent::HandleChangeInitState(UGameFrameworkComponentM
 
 void UDarkPawnExtensionComponent::OnActorInitStateChanged(const FActorInitStateChangedParams& Params)
 {
-	if (Params.FeatureName == UDarkPawnExtensionComponent::NAME_ActorFeatureName)
+	// If another feature is now in DataAvailable, see if we should transition to DataInitialized
+	if (Params.FeatureName != NAME_ActorFeatureName)
 	{
-		if (Params.FeatureState == DarkGameplayTags::InitState_DataInitialized)
+		if (Params.FeatureState == DarkGameplayTags::InitState_DataAvailable)
 		{
-			// If the extension component says all other components are initialized, try to progress to next state
 			CheckDefaultInitialization();
 		}
 	}
@@ -96,6 +86,9 @@ void UDarkPawnExtensionComponent::OnActorInitStateChanged(const FActorInitStateC
 
 void UDarkPawnExtensionComponent::CheckDefaultInitialization()
 {
+	// Before checking our progress, try progressing any other features we might depend on
+	CheckDefaultInitializationForImplementers();
+
 	static const TArray<FGameplayTag> StateChain = {
 		DarkGameplayTags::InitState_Spawned, 
 		DarkGameplayTags::InitState_DataAvailable, 
@@ -146,11 +139,6 @@ void UDarkPawnExtensionComponent::InitializeAbilitySystem(UDarkAbilitySystemComp
 	AbilitySystemComponent = InASC;
 	AbilitySystemComponent->InitAbilityActorInfo(InOwnerActor, Pawn);
 
-	//if (ensure(PawnData))
-	//{
-	//	InASC->SetTagRelationshipMapping(PawnData->TagRelationshipMapping);
-	//}
-
 	OnAbilitySystemInitialized.Broadcast();
 }
 
@@ -190,19 +178,19 @@ void UDarkPawnExtensionComponent::UninitializeAbilitySystem()
 void UDarkPawnExtensionComponent::HandleControllerChanged()
 {
 	if (AbilitySystemComponent && (AbilitySystemComponent->GetAvatarActor() == GetPawnChecked<APawn>()))
-    {
-    	ensure(AbilitySystemComponent->AbilityActorInfo->OwnerActor == AbilitySystemComponent->GetOwnerActor());
-    	if (AbilitySystemComponent->GetOwnerActor() == nullptr)
-    	{
-    		UninitializeAbilitySystem();
-    	}
-    	else
-    	{
-    		AbilitySystemComponent->RefreshAbilityActorInfo();
-    	}
-    }
-    
-    CheckDefaultInitialization();
+	{
+		ensure(AbilitySystemComponent->AbilityActorInfo->OwnerActor == AbilitySystemComponent->GetOwnerActor());
+		if (AbilitySystemComponent->GetOwnerActor() == nullptr)
+		{
+			UninitializeAbilitySystem();
+		}
+		else
+		{
+			AbilitySystemComponent->RefreshAbilityActorInfo();
+		}
+	}
+
+	CheckDefaultInitialization();
 }
 
 void UDarkPawnExtensionComponent::HandlePlayerStateReplicated()
@@ -267,6 +255,6 @@ void UDarkPawnExtensionComponent::EndPlay(const EEndPlayReason::Type EndPlayReas
 {
 	UninitializeAbilitySystem();
 	UnregisterInitStateFeature();
-
+	
 	Super::EndPlay(EndPlayReason);
 }

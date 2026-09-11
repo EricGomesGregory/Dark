@@ -4,25 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameplayAbilitySpecHandle.h"
-#include "InputActionValue.h"
-#include "GameplayTagContainer.h"
 #include "Components/PawnComponent.h"
-#include "Dark/Input/DarkInputTypes.h"
-#include "Components/GameFrameworkComponentDelegates.h"
 #include "Components/GameFrameworkInitStateInterface.h"
 #include "DarkHeroComponent.generated.h"
 
-class UDarkCameraMode;
 class UDarkAbilityTagRelationshipMapping;
-class UGameFrameworkComponentManager;
+struct FInputMappingContextAndPriority;
+struct FDarkAbilitySet_GrantedHandles;
+struct FInputActionValue;
 class UDarkInputConfig;
 class UDarkAbilitySet;
+class UDarkCameraMode;
 
 
 /**
  * UDarkHeroComponent
  * 
- * 
+ *	
  */
 UCLASS(ClassGroup=(Dark), Blueprintable, meta=(BlueprintSpawnableComponent))
 class DARK_API UDarkHeroComponent : public UPawnComponent, 
@@ -42,7 +40,7 @@ public:
 
 	/** Clears the camera override if it is set */
 	void ClearAbilityCameraMode(const FGameplayAbilitySpecHandle& OwningSpecHandle);
-
+	
 	/** Adds mode-specific input config */
 	void AddAdditionalInputConfig(const UDarkInputConfig* InputConfig);
 
@@ -84,19 +82,19 @@ protected:
 	TSubclassOf<UDarkCameraMode> DetermineCameraMode() const;
 	
 protected:
-	UPROPERTY(EditAnywhere, Category = "Dark|Hero")
+	UPROPERTY(EditAnywhere)
 	TArray<FInputMappingContextAndPriority> DefaultInputMappings;
 	
-	UPROPERTY(EditAnywhere, Category = "Dark|Hero")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UDarkInputConfig> DefaultInputConfig;
 	
-	UPROPERTY(EditAnywhere, Category = "Dark|Hero")
+	UPROPERTY(EditAnywhere)
 	TArray<TObjectPtr<const UDarkAbilitySet>> DefaultAbilitySets;
 	
-	UPROPERTY(EditAnywhere, Category = "Dark|Hero")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UDarkAbilityTagRelationshipMapping> TagRelationshipMapping;
 	
-	UPROPERTY(EditAnywhere, Category = "Dark|Hero")
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<UDarkCameraMode> DefaultCameraMode;
 	
 	/** Camera mode set by an ability. */

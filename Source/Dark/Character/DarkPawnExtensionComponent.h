@@ -9,6 +9,7 @@
 
 
 class UDarkAbilitySystemComponent;
+
 /**
  * UDarkPawnExtensionComponent
  * 
@@ -39,13 +40,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Dark|Pawn")
 	static UDarkPawnExtensionComponent* FindPawnExtensionComponent(const AActor* Actor) { return (Actor ? Actor->FindComponentByClass<UDarkPawnExtensionComponent>() : nullptr); }
 
-	/** Gets the pawn data, which is used to specify pawn properties in data */
-	//template <class T>
-	//const T* GetPawnData() const { return Cast<T>(PawnData); }
-
-	/** Sets the current pawn data */
-	//void SetPawnData(const UDarkPawnData* InPawnData);
-
 	/** Gets the current ability system component, which may be owned by a different actor */
 	UFUNCTION(BlueprintPure, Category = "Dark|Pawn")
 	UDarkAbilitySystemComponent* GetDarkAbilitySystemComponent() const { return AbilitySystemComponent; }
@@ -70,26 +64,20 @@ public:
 
 	/** Register with the OnAbilitySystemUninitialized delegate fired when our pawn is removed as the ability system's avatar actor */
 	void OnAbilitySystemUninitialized_Register(FSimpleMulticastDelegate::FDelegate Delegate);
+	
 
 protected:
-
 	virtual void OnRegister() override;
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-	//UFUNCTION()
-	//void OnRep_PawnData();
-
+	
+protected:
 	/** Delegate fired when our pawn becomes the ability system's avatar actor */
 	FSimpleMulticastDelegate OnAbilitySystemInitialized;
 
 	/** Delegate fired when our pawn is removed as the ability system's avatar actor */
 	FSimpleMulticastDelegate OnAbilitySystemUninitialized;
-
-	/** Pawn data used to create the pawn. Specified from a spawn function or on a placed instance. */
-	//UPROPERTY(EditInstanceOnly, ReplicatedUsing = OnRep_PawnData, Category = "Dark|Pawn")
-	//TObjectPtr<const UDarkPawnData> PawnData;
-
+	
 	/** Pointer to the ability system component that is cached for convenience. */
 	UPROPERTY(Transient)
 	TObjectPtr<UDarkAbilitySystemComponent> AbilitySystemComponent;

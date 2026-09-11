@@ -3,27 +3,21 @@
 
 #include "DarkHeroComponent.h"
 
-#include "DarkCharacter.h"
-#include "Dark/DarkLogChannels.h"
-#include "Dark/DarkGameplayTags.h"
-#include "EnhancedInputSubsystems.h"
-#include "DarkPawnExtensionComponent.h"
+#include "Dark/AbilitySystem/DarkAbilitySystemComponent.h"
+#include "Components/GameFrameworkComponentManager.h"
+#include "UserSettings/EnhancedInputUserSettings.h"
+#include "Dark/Player/DarkPlayerController.h"
+#include "Dark/Input/DarkInputComponent.h"
 #include "Dark/Player/DarkLocalPlayer.h"
 #include "Dark/Player/DarkPlayerState.h"
-#include "Dark/Input/DarkInputComponent.h"
-#include "EnhancedInputSubsystemInterface.h"
-#include "Dark/Player/DarkPlayerController.h"
+#include "DarkPawnExtensionComponent.h"
+#include "Dark/Input/DarkInputTypes.h"
+#include "EnhancedInputSubsystems.h"
+#include "Dark/DarkGameplayTags.h"
+#include "DarkCharacter.h"
+#include "Dark/DarkLogChannels.h"
 #include "Dark/AbilitySystem/DarkAbilitySet.h"
-#include "UserSettings/EnhancedInputUserSettings.h"
-#include "Components/GameFrameworkComponentManager.h"
-#include "Dark/AbilitySystem/DarkAbilitySystemComponent.h"
-#include "Dark/Camera/DarkCameraComponent.h"
 #include "Dark/Camera/DarkCameraMode.h"
-
-#if WITH_EDITOR
-#include "Misc/UObjectToken.h"
-#endif	// WITH_EDITOR
-
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(DarkHeroComponent)
 
@@ -40,7 +34,7 @@ const FName UDarkHeroComponent::NAME_ActorFeatureName("Hero");
 UDarkHeroComponent::UDarkHeroComponent(const FObjectInitializer& ObjectInitializer)
 : Super(ObjectInitializer)
 {
-	AbilityCameraMode = nullptr;
+	//AbilityCameraMode = nullptr;
 	bReadyToBindInputs = false;
 }
 
@@ -204,11 +198,6 @@ void UDarkHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* M
 				InitializePlayerInput(Pawn->InputComponent);
 			}
 		}
-		
-		if (auto* CameraComponent = UDarkCameraComponent::FindCameraComponent(Pawn))
-		{
-			CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &ThisClass::DetermineCameraMode);
-		}
 	}
 }
 
@@ -241,29 +230,10 @@ void UDarkHeroComponent::OnRegister()
 {
 	Super::OnRegister();
 	
-	if (!GetPawn<APawn>())
-	{
-		UE_LOG(LogDark, Error, TEXT("[UDarkHeroComponent::OnRegister] This component has been added to a blueprint whose base class is not a Pawn. To use this component, it MUST be placed on a Pawn Blueprint."));
-
-#if WITH_EDITOR
-		if (GIsEditor)
-		{
-			static const FText Message = NSLOCTEXT("DarkHeroComponent", "NotOnPawnError", "has been added to a blueprint whose base class is not a Pawn. To use this component, it MUST be placed on a Pawn Blueprint. This will cause a crash if you PIE!");
-			static const FName HeroMessageLogName = TEXT("DarkHeroComponent");
-			
-			FMessageLog(HeroMessageLogName).Error()
-				->AddToken(FUObjectToken::Create(this, FText::FromString(GetNameSafe(this))))
-				->AddToken(FTextToken::Create(Message));
-				
-			FMessageLog(HeroMessageLogName).Open();
-		}
-#endif
-	}
-	else
-	{
-		// Register with the init state system early, this will only work if this is a game world
-		RegisterInitStateFeature();
-	}
+	//@Eric TODO: Handle registration 
+	
+	// Register with the init state system early, this will only work if this is a game world
+	RegisterInitStateFeature();
 }
 
 void UDarkHeroComponent::BeginPlay()
@@ -481,4 +451,5 @@ TSubclassOf<UDarkCameraMode> UDarkHeroComponent::DetermineCameraMode() const
 	
 	return DefaultCameraMode;
 }
+
 
