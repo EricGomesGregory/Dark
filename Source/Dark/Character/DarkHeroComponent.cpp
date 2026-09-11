@@ -17,6 +17,7 @@
 #include "DarkCharacter.h"
 #include "Dark/DarkLogChannels.h"
 #include "Dark/AbilitySystem/DarkAbilitySet.h"
+#include "Dark/Camera/DarkCameraComponent.h"
 #include "Dark/Camera/DarkCameraMode.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(DarkHeroComponent)
@@ -197,6 +198,11 @@ void UDarkHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* M
 			{
 				InitializePlayerInput(Pawn->InputComponent);
 			}
+		}
+		
+		if (auto* CameraComponent = UDarkCameraComponent::FindCameraComponent(Pawn))
+		{
+			CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &ThisClass::DetermineCameraMode);
 		}
 	}
 }
