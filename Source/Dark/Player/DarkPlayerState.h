@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerState.h"
 #include "DarkPlayerState.generated.h"
 
+class UDarkInventoryComponent;
 class UDarkHealthSet;
 class ADarkPlayerController;
 class UDarkAbilitySystemComponent;
@@ -72,6 +73,9 @@ private:
 	// Health attribute set used by this actor.
 	UPROPERTY()
 	TObjectPtr<const UDarkHealthSet> HealthSet;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Dark|PlayerState")
+	TObjectPtr<UDarkInventoryComponent> InventoryComponent;
 	
 	UPROPERTY(Replicated)
 	EDarkPlayerConnectionType MyPlayerConnectionType;

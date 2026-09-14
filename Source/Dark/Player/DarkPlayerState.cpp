@@ -7,6 +7,7 @@
 #include "Dark/AbilitySystem/Attributes/DarkHealthSet.h"
 #include "Dark/Character/DarkPawnExtensionComponent.h"
 #include "DarkPlayerController.h"
+#include "Dark/Inventory/DarkInventoryComponent.h"
 #include "Net/UnrealNetwork.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(DarkPlayerState)
@@ -21,6 +22,9 @@ ADarkPlayerState::ADarkPlayerState(const FObjectInitializer& ObjectInitializer)
 	
 	// These attribute sets will be detected by AbilitySystemComponent::InitializeComponent. Keeping a reference so that the sets don't get garbage collected before that.
 	HealthSet = CreateDefaultSubobject<UDarkHealthSet>(TEXT("HealthSet"));
+	
+	InventoryComponent = CreateDefaultSubobject<UDarkInventoryComponent>(TEXT("InventoryComponent"));
+	InventoryComponent->SetIsReplicated(true);
 	
 	// AbilitySystemComponent needs to be updated at a high frequency.
 	SetNetUpdateFrequency(100.0f);
