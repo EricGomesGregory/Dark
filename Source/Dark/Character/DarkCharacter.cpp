@@ -66,7 +66,7 @@ ADarkCharacter::ADarkCharacter(const FObjectInitializer& ObjectInitializer)
 	CameraComponent->SetRelativeLocation(FVector(-300.0f, 0.0f, 75.0f));
 
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = true;
+	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
 	BaseEyeHeight = 80.0f;

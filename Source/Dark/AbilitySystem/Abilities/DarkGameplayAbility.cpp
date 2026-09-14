@@ -3,14 +3,16 @@
 
 #include "DarkGameplayAbility.h"
 
-#include "Dark/AbilitySystem/DarkAbilitySystemComponent.h"
-#include "Dark/Player/DarkPlayerController.h"
-#include "Dark/DarkGameplayTags.h"
+#include "DarkAbilityCost.h"
+#include "AbilitySystemLog.h"
 #include "Dark/DarkLogChannels.h"
 #include "AbilitySystemGlobals.h"
-#include "AbilitySystemLog.h"
-#include "DarkAbilityCost.h"
+#include "Dark/DarkGameplayTags.h"
 #include "Dark/Camera/DarkCameraMode.h"
+#include "Dark/Character/DarkCharacter.h"
+#include "Dark/Player/DarkPlayerController.h"
+#include "Dark/Character/DarkHeroComponent.h"
+#include "Dark/AbilitySystem/DarkAbilitySystemComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(DarkGameplayAbility)
 
@@ -78,6 +80,16 @@ AController* UDarkGameplayAbility::GetControllerFromActorInfo() const
 	}
 
 	return nullptr;
+}
+
+ADarkCharacter* UDarkGameplayAbility::GetDarkCharacterFromActorInfo() const
+{
+	return (CurrentActorInfo ? Cast<ADarkCharacter>(CurrentActorInfo->AvatarActor.Get()) : nullptr);
+}
+
+UDarkHeroComponent* UDarkGameplayAbility::GetHeroComponentFromActorInfo() const
+{
+	return (CurrentActorInfo ? UDarkHeroComponent::FindHeroComponent(CurrentActorInfo->AvatarActor.Get()) : nullptr);
 }
 
 void UDarkGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const

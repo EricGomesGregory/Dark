@@ -6,9 +6,11 @@
 #include "Abilities/GameplayAbility.h"
 #include "DarkGameplayAbility.generated.h"
 
+class ADarkCharacter;
 class UDarkCameraMode;
-class ADarkPlayerController;
 class UDarkAbilityCost;
+class UDarkHeroComponent;
+class ADarkPlayerController;
 
 
 /**
@@ -73,11 +75,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
 	AController* GetControllerFromActorInfo() const;
 
-	//UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
-	//ADarkCharacter* GetDarkCharacterFromActorInfo() const;
+	UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
+	ADarkCharacter* GetDarkCharacterFromActorInfo() const;
 
-	//UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
-	//UDarkHeroComponent* GetHeroComponentFromActorInfo() const;
+	UFUNCTION(BlueprintCallable, Category = "Dark|Ability")
+	UDarkHeroComponent* GetHeroComponentFromActorInfo() const;
 	
 	EDarkAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
 	EDarkAbilityActivationGroup GetActivationGroup() const { return ActivationGroup; }
