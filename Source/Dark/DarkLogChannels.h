@@ -7,5 +7,6 @@
 
 DARK_API DECLARE_LOG_CATEGORY_EXTERN(LogDark, Log, All);
 DARK_API DECLARE_LOG_CATEGORY_EXTERN(LogDarkAbilitySystem, Log, All);
+DARK_API DECLARE_LOG_CATEGORY_EXTERN(LogDarkEquipment, Log, All);
 
 DARK_API FString GetClientServerContextString(UObject* ContextObject = nullptr);

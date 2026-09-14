@@ -5,6 +5,7 @@
 
 DEFINE_LOG_CATEGORY(LogDark);
 DEFINE_LOG_CATEGORY(LogDarkAbilitySystem);
+DEFINE_LOG_CATEGORY(LogDarkEquipment);
 
 FString GetClientServerContextString(UObject* ContextObject)
 {

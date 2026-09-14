@@ -8,7 +8,9 @@
 #include "DarkItemFragment_SetStats.generated.h"
 
 /**
+ * UDarkItemFragment_SetStats
  * 
+ *	
  */
 UCLASS(meta=(DisplayName="Set Stats"))
 class DARK_API UDarkItemFragment_SetStats : public UDarkInventoryItemFragment
