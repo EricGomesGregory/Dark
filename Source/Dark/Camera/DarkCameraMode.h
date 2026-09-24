@@ -86,15 +86,11 @@ public:
 	float GetBlendWeight() const { return BlendWeight; }
 	void SetBlendWeight(float Weight);
 
-	FGameplayTag GetCameraTypeTag() const
-	{
-		return CameraTypeTag;
-	}
+	FGameplayTag GetCameraTypeTag() const { return CameraTypeTag; }
 
 	virtual void DrawDebug(UCanvas* Canvas) const;
 
 protected:
-
 	virtual FVector GetPivotLocation() const;
 	virtual FRotator GetPivotRotation() const;
 
@@ -103,7 +99,7 @@ protected:
 
 protected:
 	// A tag that can be queried by gameplay code that cares when a kind of camera mode is active
-	// without having to ask about a specific mode (e.g., when aiming downsights to get more accuracy)
+	// without having to ask about a specific mode (e.g., when aiming down sights to get more accuracy)
 	UPROPERTY(EditDefaultsOnly, Category = "Blending")
 	FGameplayTag CameraTypeTag;
 

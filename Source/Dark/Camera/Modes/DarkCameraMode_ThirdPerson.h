@@ -34,7 +34,6 @@ protected:
 	virtual void DrawDebug(UCanvas* Canvas) const override;
 
 protected:
-
 	// Curve that defines local-space offsets from the target using the view pitch to evaluate the curve.
 	UPROPERTY(EditDefaultsOnly, Category = "Third Person", Meta = (EditCondition = "!bUseRuntimeFloatCurves"))
 	TObjectPtr<const UCurveVector> TargetOffsetCurve;
@@ -101,7 +100,6 @@ public:
 #endif
 
 protected:
-	
 	void SetTargetCrouchOffset(FVector NewTargetOffset);
 	void UpdateCrouchOffset(float DeltaTime);
 
